@@ -45,6 +45,7 @@ const Stars = () => {
   const [viewImg, setViewImg] = useState(null);
   const [viewVideo, setViewVideo] = useState(null);
   const videoRef = useRef(null);
+  const closeBtnRef = useRef(null);
 
   useEffect(() => {
     const applyHashTab = () => {
@@ -93,8 +94,8 @@ const Stars = () => {
               ctx.drawImage(temp, 0, 0, canvas.width, canvas.height);
               const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
               if (!cancelled) setPosterSrc(dataUrl);
-            } catch (err) {
-              // ignore capture errors
+            } catch {
+              /* ignore capture errors */
             } finally {
               temp.pause();
               temp.removeAttribute('src');
@@ -110,9 +111,9 @@ const Stars = () => {
           temp.addEventListener('loadeddata', onLoadedData, { once: true });
           temp.addEventListener('error', onError, { once: true });
           // kick off loading metadata
-          try { temp.load(); } catch (e) { /* ignore */ }
-        } catch (err) {
-          // ignore
+          try { temp.load(); } catch { /* ignore */ }
+        } catch {
+          /* ignore */
         }
       };
 
@@ -153,10 +154,21 @@ const Stars = () => {
 
 
   useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') setViewVideo(null);
+    };
+    if (viewVideo) {
+      document.addEventListener('keydown', onKey);
+      // focus the inline close button so it's immediately reachable on mobile
+      setTimeout(() => { closeBtnRef.current?.focus?.(); }, 50);
+    }
+
     if (!viewVideo && videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
     }
+
+    return () => document.removeEventListener('keydown', onKey);
   }, [viewVideo]);
 
   useEffect(() => {
@@ -209,11 +221,31 @@ const Stars = () => {
         ))}
       </div>
           {viewVideo && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
               <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setViewVideo(null)} />
-              <div className="relative max-w-[95vw] max-h-[95vh] mt-10 flex items-center justify-center">
-                <button onClick={() => setViewVideo(null)} className="absolute top-2 right-2 z-30 px-2 py-1 bg-amber-200 text-black rounded">Close</button>
-                <video ref={videoRef} src={viewVideo} controls autoPlay preload="auto" playsInline className="w-auto h-auto max-w-[95vw] max-h-[95vh] object-contain rounded-md" />
+
+              <div className="relative w-full max-w-[95vw] max-h-[80vh] sm:max-h-[95vh] flex items-center justify-center">
+                <div className="w-full h-full flex flex-col items-center justify-center p-2 sm:p-4">
+                  <video
+                    ref={videoRef}
+                    src={viewVideo}
+                    controls
+                    autoPlay
+                    preload="auto"
+                    playsInline
+                    className="max-w-full max-h-[calc(80vh-64px)] object-contain rounded-md shadow-lg bg-black"
+                  />
+                  <div className="mt-3">
+                    <button
+                      ref={closeBtnRef}
+                      onClick={() => setViewVideo(null)}
+                      className="px-4 py-2 bg-amber-200 text-black rounded shadow-md hover:bg-amber-300 focus:outline-none"
+                      aria-label="Close video"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
