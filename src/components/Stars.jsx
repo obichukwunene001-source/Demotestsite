@@ -56,6 +56,95 @@ const Stars = () => {
     return () => window.removeEventListener('hashchange', applyHashTab);
   }, []);
 
+  // Runtime component that captures the first frame of the video into a small data-URL poster
+  const ThumbnailVideo = ({ src, index, onOpen }) => {
+    const vidRef = useRef(null);
+    const [posterSrc, setPosterSrc] = useState(null);
+
+    useEffect(() => {
+      let cancelled = false;
+
+      // Capture a frame into a canvas and store as data URL to use as poster
+      const capturePoster = async () => {
+        try {
+          const temp = document.createElement('video');
+          temp.muted = true;
+          temp.playsInline = true;
+          temp.preload = 'metadata';
+          temp.src = src;
+          // wait for enough data to draw a frame
+          const onLoadedData = () => {
+            try {
+              const w = temp.videoWidth || 160;
+              const h = temp.videoHeight || 90;
+              const maxW = 640; const maxH = 360;
+              const scale = Math.min(1, maxW / w, maxH / h);
+              const canvas = document.createElement('canvas');
+              canvas.width = Math.max(1, Math.round(w * scale));
+              canvas.height = Math.max(1, Math.round(h * scale));
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(temp, 0, 0, canvas.width, canvas.height);
+              const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+              if (!cancelled) setPosterSrc(dataUrl);
+            } catch (err) {
+              // ignore capture errors
+            } finally {
+              temp.pause();
+              temp.removeAttribute('src');
+              temp.load && temp.load();
+            }
+          };
+
+          const onError = () => {
+            temp.removeAttribute('src');
+            temp.load && temp.load();
+          };
+
+          temp.addEventListener('loadeddata', onLoadedData, { once: true });
+          temp.addEventListener('error', onError, { once: true });
+          // kick off loading metadata
+          try { temp.load(); } catch (e) { /* ignore */ }
+        } catch (err) {
+          // ignore
+        }
+      };
+
+      // Only attempt capture on mobile or when poster missing
+      capturePoster();
+
+      return () => { cancelled = true; };
+    }, [src]);
+
+    return (
+      <div className="rounded-md md:w-1/3 lg:w-1/4">
+        <div className="h-40 md:h-[360px] 2xl:h-[480px] overflow-hidden rounded-md relative">
+          <video
+            ref={vidRef}
+            src={src}
+            muted
+            preload={posterSrc ? 'none' : 'metadata'}
+            playsInline
+            poster={posterSrc || undefined}
+            className="w-full h-full object-cover cursor-pointer"
+            aria-label={`Play video ${index + 1}`}
+            onClick={() => onOpen(src)}
+          />
+          <button
+            onClick={() => onOpen(src)}
+            className="absolute inset-0 z-10 flex items-center justify-center bg-black/0 hover:bg-black/10"
+            aria-label={`Open video ${index + 1}`}
+          >
+            <span className="bg-black/70 text-white rounded-full p-2">▶</span>
+          </button>
+        </div>
+        <div className="flex justify-center mt-2">
+          <button onClick={() => onOpen(src)} className="px-3 py-1 bg-slate-700 text-cyan-100 px-3 py-1 rounded-md text-sm  font-medium cursor-pointer">Play video</button>
+        </div>
+      </div>
+    );
+  };
+
+
   useEffect(() => {
     if (!viewVideo && videoRef.current) {
       videoRef.current.pause();
@@ -106,33 +195,12 @@ const Stars = () => {
         </>
       ) : (
         <>
-          <div className="grid grid-cols-2 md:flex md:flex-wrap gap-6 p-4 w-full justify-center items-center">
-            {[{src: house1}, {src: podcast2}].map((vid, i) => (
-              <div key={i} className="rounded-md md:w-1/3 lg:w-1/4">
-                <div className="h-40 md:h-[360px] 2xl:h-[480px] overflow-hidden rounded-md relative">
-                  <video
-                    src={vid.src}
-                    muted
-                    preload="metadata"
-                    playsInline
-                    className="w-full h-full object-cover cursor-pointer"
-                    aria-label={`Play video ${i + 1}`}
-                    onClick={() => setViewVideo(vid.src)}
-                  />
-                  <button
-                    onClick={() => setViewVideo(vid.src)}
-                    className="absolute inset-0 z-10 flex items-center justify-center bg-black/0 hover:bg-black/10"
-                    aria-label={`Open video ${i + 1}`}
-                  >
-                    <span className="bg-black/70 text-white rounded-full p-2">▶</span>
-                  </button>
-                </div>
-                <div className="flex justify-center mt-2">
-                  <button onClick={() => setViewVideo(vid.src)} className="px-3 py-1 bg-slate-700 text-cyan-100 px-3 py-1 rounded-md text-sm  font-medium cursor-pointer">Play video</button>
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Thumbnail grid using runtime-captured posters for reliable mobile thumbnails */}
+      <div className="grid grid-cols-2 md:flex md:flex-wrap gap-6 p-4 w-full justify-center items-center">
+        {[house1, podcast2].map((src, i) => (
+          <ThumbnailVideo key={i} src={src} index={i} onOpen={(s) => setViewVideo(s)} />
+        ))}
+      </div>
           {viewVideo && (
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setViewVideo(null)} />
