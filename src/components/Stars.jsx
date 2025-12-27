@@ -1,6 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import house1 from "../assets/house1.mp4";
 import podcast2 from "../assets/podcast2.mp4";
+import v1 from "../assets/v1.mp4";
+import v2 from "../assets/v2.mp4";
+import v3 from "../assets/v3.mp4";
+import v4 from "../assets/v4.mp4";
+import v5 from "../assets/v5.mp4";
+import v6 from "../assets/v6.mp4";
+import v7 from "../assets/v7.mp4";
 import w1 from "../assets/w1.jpeg";
 import w2 from "../assets/w2.jpeg";
 import w3 from "../assets/w3.jpeg";
@@ -197,7 +204,7 @@ const Stars = () => {
         <>
           {/* Thumbnail grid using runtime-captured posters for reliable mobile thumbnails */}
       <div className="grid grid-cols-2 md:flex md:flex-wrap gap-6 p-4 w-full justify-center items-center">
-        {[house1, podcast2].map((src, i) => (
+        {[house1, podcast2, v1, v2, v3, v4, v5, v6, v7].map((src, i) => (
           <ThumbnailVideo key={i} src={src} index={i} onOpen={(s) => setViewVideo(s)} />
         ))}
       </div>
