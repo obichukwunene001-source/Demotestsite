@@ -22,11 +22,31 @@ const Heros = memo(({ setActive }) => {
     const v = videoRef.current;
     if (!v) return;
 
-    // Cycle through videos sequentially without PiP or pop-out; loop across the list.
-    v.src = HERO_VIDEOS[idx.current];
-    v.muted = true;
-    v.loop = false; // we manually handle looping across sources
-    v.play?.().catch((err) => { console.warn('Video play failed (possibly autoplay blocked):', err); });
+    let observer;
+    const loadAndPlay = () => {
+      if (!v) return;
+      try { v.setAttribute('preload', 'auto'); } catch (err) { void err; }
+      if (!v.src) v.src = HERO_VIDEOS[idx.current];
+      v.muted = true;
+      v.loop = false;
+      v.play?.().catch((err) => { console.warn('Video play failed (possibly autoplay blocked):', err); });
+    };
+
+    // Defer heavy video fetches until the element is in (or near) the viewport
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            loadAndPlay();
+            observer.disconnect();
+          }
+        });
+      }, { root: null, rootMargin: '200px', threshold: 0.1 });
+      observer.observe(v);
+    } else {
+      // Fallback: load immediately
+      loadAndPlay();
+    }
 
     const onEnded = () => {
       idx.current = (idx.current + 1) % HERO_VIDEOS.length;
@@ -51,6 +71,7 @@ const Heros = memo(({ setActive }) => {
     return () => {
       v.removeEventListener('ended', onEnded);
       document.removeEventListener('visibilitychange', onVisibilityChange);
+      if (observer && observer.disconnect) observer.disconnect();
     };
   }, []);
 
@@ -119,7 +140,8 @@ const Heros = memo(({ setActive }) => {
                 key={i}
                 src={img}
                 alt=""
-                loading="lazy"
+                loading={i === 0 ? "eager" : "lazy"}
+                fetchpriority={i === 0 ? "high" : undefined}
                 decoding="async"
                 className="h-full object-cover brightness-45 block"
               />
@@ -134,7 +156,8 @@ const Heros = memo(({ setActive }) => {
           ref={videoRef}
           muted
           playsInline
-          preload="metadata"
+          preload="none"
+          poster={w1}
           disablePictureInPicture
           controlsList="nodownload noremoteplayback"
           onMouseEnter={() => {

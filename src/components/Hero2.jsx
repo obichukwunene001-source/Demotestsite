@@ -96,10 +96,11 @@ const Hero2 = ({ setActive }) => {
                       tabIndex={0}
                       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openImage(service.image); }}
                       className="w-full h-35 object-cover rounded-md mb-2 cursor-pointer"
-                      loading="lazy"
+                      loading={idx === 0 ? "eager" : "lazy"}
+                      fetchpriority={idx === 0 ? "high" : undefined}
                       decoding="async"
                     />
-                  )}
+                  )} 
                   <h3 className="text-sm md:text-base font-semibold text-yellow-100">
                     {service.title}
                   </h3>
@@ -173,7 +174,8 @@ const Hero2 = ({ setActive }) => {
               <img
                 src={img}
                 alt={`Gallery ${i + 1}`}
-                loading="lazy"
+                loading={i === 0 ? "eager" : "lazy"}
+                fetchpriority={i === 0 ? "high" : undefined}
                 decoding="async"
                 onClick={() => openImage(img)}
                 role="button"
@@ -182,7 +184,7 @@ const Hero2 = ({ setActive }) => {
                 className="w-full h-full object-cover cursor-pointer"
               />
             </div>
-          ))}
+          ))} 
             <div className="w-full flex justify-center mt-4">
             <button
               type="button"
@@ -201,7 +203,7 @@ const Hero2 = ({ setActive }) => {
           <div className="container mx-auto md:px-8 lg:px-15 xl:mx-auto xl:px-48 px-9 flex  md:flex-row items-center justify-between gap-4">
             <div className="flex  gap-3  mb-50 ">
               <div role="button" tabIndex={0} onClick={(e) => { setActive && setActive('Home'); goHomeReload(e, 'top'); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setActive && setActive('Home'); goHomeReload(e, 'top'); } }}>
-                <img src={foi} alt="porshe-logo" className="w-14 h-5 md:w-36 md:h-10" />
+                <img src={foi} alt="porshe-logo" width="144" height="64" loading="eager" fetchpriority="high" decoding="async" className="w-14 h-5 md:w-36 md:h-10" />
                 <a href={`${BASE}#top`} onClick={(e) => { setActive && setActive('Home'); goHomeReload(e, 'top'); }} className=" text-amber-200 font-normal text-xs">
                   <div className="flex gap-2">
                     <span>MAROCK</span>
@@ -216,11 +218,11 @@ const Hero2 = ({ setActive }) => {
           <div>
             <div className="flex flex-col text-base items-start ml-8 -mt-47 text-xs md:mt-25 xl:-ml-140">
               <div className="flex items-center text-gray-400 space-x-2">
-                <img src={whatsapp} alt="contact icon" className="w-5 h-5" />
+                <img src={whatsapp} alt="contact icon" className="w-5 h-5" loading="eager" decoding="async" />
                 <span>0916219586</span>
               </div>
               <div className="flex items-center text-gray-400 mt-2">
-                <img src={placeholder} alt="whatsapp" className="w-5 h-5 mr-2" />
+                <img src={placeholder} alt="whatsapp" className="w-5 h-5 mr-2" loading="eager" decoding="async" />
                 <span>64 Nepa Road Awada Obosi,<br /> Anambara State.</span>
               </div>
             </div>
