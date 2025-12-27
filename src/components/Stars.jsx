@@ -110,7 +110,7 @@ const Stars = () => {
             {[house1, podcast2].map((v,i)=> (
               <div key={i} className="rounded-md md:w-1/3 lg:w-1/4">
                 <div className="h-40 md:h-[360px] 2xl:h-[480px] overflow-hidden rounded-md">
-                  <video onClick={() => setViewVideo(v)} src={v} muted preload="metadata" className="w-full h-full object-cover cursor-pointer" />
+                  <video onClick={() => setViewVideo(v)} src={v} muted preload="none" playsInline className="w-full h-full object-cover cursor-pointer" />
                 </div>
                 <div className="flex justify-center mt-2">
                   <button onClick={() => setViewVideo(v)} className="px-3 py-1 bg-slate-700 text-cyan-100 px-3 py-1 rounded-md text-sm  font-medium cursor-pointer">Play video</button>
@@ -123,7 +123,7 @@ const Stars = () => {
               <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setViewVideo(null)} />
               <div className="relative max-w-[95vw] max-h-[95vh] mt-10 flex items-center justify-center">
                 <button onClick={() => setViewVideo(null)} className="absolute top-2 right-2 z-30 px-2 py-1 bg-amber-200 text-black rounded">Close</button>
-                <video ref={videoRef} src={viewVideo} controls autoPlay className="w-auto h-auto max-w-[95vw] max-h-[95vh] object-contain rounded-md" />
+                <video ref={videoRef} src={viewVideo} controls autoPlay preload="auto" playsInline className="w-auto h-auto max-w-[95vw] max-h-[95vh] object-contain rounded-md" />
               </div>
             </div>
           )}

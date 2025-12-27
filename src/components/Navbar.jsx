@@ -106,7 +106,7 @@ const Navbar = ({ active, setActive }) => {
                     onClick={(e) => { setActive && setActive('Home'); goHomeReload(e, 'top'); }}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setActive && setActive('Home'); goHomeReload(e, 'top'); } }}
                 >
-                    <img src={foi} alt="porshe-logo" className="w-18 h-7 md:w-36 md:h-16" />
+                    <img src={foi} alt="porshe-logo" className="w-18 h-7 md:w-36 md:h-16" width="144" height="64" loading="eager" fetchpriority="high" decoding="async" />
                     <a href={`${BASE}#top`} onClick={(e) => { setActive && setActive('Home'); goHomeReload(e, 'top'); }} className=" text-amber-200 font-semibold text-xs">
                         <span>MAROCK</span>
                         <span className=""> BUILDING</span>
@@ -149,7 +149,7 @@ const Navbar = ({ active, setActive }) => {
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setActive && setActive('Home'); goHomeReload(e, 'top'); } }}
                 >
                     
-                    <img src={foi2} alt="logo" className="w-10 h-4 md:w-36 md:h-16" />
+                    <img src={foi2} alt="logo" className="w-10 h-4 md:w-36 md:h-16" width="144" height="64" loading="eager" fetchpriority="high" decoding="async" />
                     <a href={`${BASE}#top`} onClick={(e) => { setActive && setActive('Home'); goHomeReload(e, 'top'); }} className=" text-amber-200 font-normal text-xs">
                         <span>MAROCK</span>
                         <span className=""> BUILDING</span>

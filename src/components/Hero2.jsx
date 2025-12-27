@@ -234,7 +234,10 @@ const Hero2 = ({ setActive }) => {
               </div>
               <nav aria-labelledby="footer-quick-heading" className="flex flex-col gap-3 items-start text-left mt-2">
                 <a href="#" className="text-sm text-gray-300 hover:text-white">Home</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); setActive && setActive('Membership'); const scrollToElement = (id, { behavior = 'smooth', offset = 20, maxAttempts = 20, interval = 50 } = {}, attempts = 0) => { const el = document.getElementById(id); if (el) { const top = el.getBoundingClientRect().top + window.pageYOffset - offset; window.scrollTo({ top, behavior }); return; } if (attempts < maxAttempts) setTimeout(() => scrollToElement(id, { behavior, offset, maxAttempts, interval }, attempts + 1), interval); }; scrollToElement('services-section'); }} className="text-sm text-gray-300 hover:text-white">Services</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); setActive && setActive('Membership'); const scrollToElement = (id, { behavior = 'smooth', 
+                  offset = 20, maxAttempts = 20, interval = 50 } = {}, attempts = 0) =>
+                   { const el = document.getElementById(id); if (el) { const top = el.getBoundingClientRect().top + window.pageYOffset - offset; window.scrollTo({ top, behavior }); return; }
+                    if (attempts < maxAttempts) setTimeout(() => scrollToElement(id, { behavior, offset, maxAttempts, interval }, attempts + 1), interval); }; scrollToElement('services-section'); }} className="text-sm text-gray-300 hover:text-white">Services</a>
                 <a href="#" onClick={(e) => { e.preventDefault(); setActive && setActive('Meet'); goHomeReload(e, 'stars-section'); }} className="text-sm text-gray-300 hover:text-white">Gallery</a>
                 <a href="#" onClick={(e) => { e.preventDefault(); setActive && setActive('Book'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="text-sm text-gray-300 hover:text-white">Book Us</a>
               </nav>
