@@ -107,13 +107,28 @@ const Stars = () => {
       ) : (
         <>
           <div className="grid grid-cols-2 md:flex md:flex-wrap gap-6 p-4 w-full justify-center items-center">
-            {[house1, podcast2].map((v,i)=> (
+            {[{src: house1}, {src: podcast2}].map((vid, i) => (
               <div key={i} className="rounded-md md:w-1/3 lg:w-1/4">
-                <div className="h-40 md:h-[360px] 2xl:h-[480px] overflow-hidden rounded-md">
-                  <video onClick={() => setViewVideo(v)} src={v} muted preload="none" playsInline className="w-full h-full object-cover cursor-pointer" />
+                <div className="h-40 md:h-[360px] 2xl:h-[480px] overflow-hidden rounded-md relative">
+                  <video
+                    src={vid.src}
+                    muted
+                    preload="metadata"
+                    playsInline
+                    className="w-full h-full object-cover cursor-pointer"
+                    aria-label={`Play video ${i + 1}`}
+                    onClick={() => setViewVideo(vid.src)}
+                  />
+                  <button
+                    onClick={() => setViewVideo(vid.src)}
+                    className="absolute inset-0 z-10 flex items-center justify-center bg-black/0 hover:bg-black/10"
+                    aria-label={`Open video ${i + 1}`}
+                  >
+                    <span className="bg-black/70 text-white rounded-full p-2">▶</span>
+                  </button>
                 </div>
                 <div className="flex justify-center mt-2">
-                  <button onClick={() => setViewVideo(v)} className="px-3 py-1 bg-slate-700 text-cyan-100 px-3 py-1 rounded-md text-sm  font-medium cursor-pointer">Play video</button>
+                  <button onClick={() => setViewVideo(vid.src)} className="px-3 py-1 bg-slate-700 text-cyan-100 px-3 py-1 rounded-md text-sm  font-medium cursor-pointer">Play video</button>
                 </div>
               </div>
             ))}
