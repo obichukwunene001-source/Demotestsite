@@ -1,0 +1,38 @@
+@import "tailwindcss" ;
+
+.noto-sans-display {
+  font-family: "Noto Sans Display", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+/* Smooth scrolling and rendering optimizations */
+html, body {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Hint the browser to composite heavy elements onto the GPU layer. Add this
+   class to components that animate or cause repaint/paint thrashing. */
+.force-composite {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
